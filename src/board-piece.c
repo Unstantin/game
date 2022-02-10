@@ -74,12 +74,14 @@ void boardPieceInit() {
 void boardPieceTextureInit() {
     texture *tex = texNew();
     tex->filename = BOARD_PIECE_TEX_FILENAME;
+    tex->mipmap = 1;
 
     int error = texInit(tex);
     if(error) return;
 
     texture *texOutline = texNew();
     texOutline->filename = BOARD_PIECE_TEX_OUTLINE_FILENAME;
+    texOutline->mipmap = 1;
 
     error = texInit(texOutline);
     if(error) return;

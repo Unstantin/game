@@ -13,7 +13,7 @@ color colors[COLOR_N] = {
     [COLOR_CELL_LANDING_SITE] = {0.6, 0.6, 0.6},
     [COLOR_NODE] = {0.2, 0.6, 0.2},
     [COLOR_SLIDE] = {1, 1, 1},
-    [COLOR_SLIDE_BUTTON_FOCUSED] = {0.3, 0.3, 1},
+    [COLOR_SLIDE_BUTTON_FOCUSED] = {0.5, 1, 0.5},
     [COLOR_SLIDE_BUTTON_INACTIVE] = {0.5, 0.5, 0.5}
 };
 

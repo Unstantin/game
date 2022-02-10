@@ -39,6 +39,7 @@ void boardCellTextureInit() {
 
     texture *texLanding = texNew();
     texLanding->filename = BOARD_CELL_TEX_LANDING_SITE_FILENAME;
+    texLanding->mipmap = 1;
 
     error = texInit(texLanding);
     if(error) return;
