@@ -4,6 +4,8 @@
 #include "board-cell.h"
 #include "board-piece.h"
 
+void boardPieceWinnerDetermined(piece *p);
+
 void boardPieceStep(unsigned int dirname) {
     dir d = dirname2dir(dirname);
     piece *p = board.pieceActive;
@@ -17,14 +19,7 @@ void boardPieceStep(unsigned int dirname) {
     
     if(!success) return;
 
-    char reached = boardPieceOppositeSideReachedQ(p, p->cell);
-
-    if(reached) {
-        printf("Border reached\n");
-        fflush(stdout);
-
-        boardPieceRemoveDisableOthers(board.pieceActive);
-    }
+    boardPieceWinnerDetermined(p);
 
 #ifdef GAME_DEV_MODE
     p->stepCount++;
@@ -33,16 +28,16 @@ void boardPieceStep(unsigned int dirname) {
 #endif
 }
 
-char boardPieceActiveJumpToCell(cell *c) {
+void boardPieceActiveJumpToCell(cell *c) {
     piece *p = board.pieceActive;
 
-    if(!c) return 0;
-    if(c->piece) return 0;
+    if(!c) return;
+    if(c->piece) return;
 
     if(p->landing) {
-        if(!boardPieceLandingPossibleQ(p, c)) return 0;
+        if(!boardPieceLandingPossibleQ(p, c)) return;
     } else { 
-        if(!boardPieceJumpPossibleQ(p, c)) return 0;
+        if(!boardPieceJumpPossibleQ(p, c)) return;
     }
 
     if(p->landing)
@@ -51,7 +46,24 @@ char boardPieceActiveJumpToCell(cell *c) {
     boardPieceJump(p, c);
     boardPieceShapeXYApply(p);
 
-    return 1;
+    boardPieceWinnerDetermined(p);
+
+#ifdef GAME_DEV_MODE 
+        board.pieceActive->stepCount++;
+#else
+        boardPieceActivateNext();
+#endif
+}
+
+void boardPieceWinnerDetermined(piece *p) {
+    char reached = boardPieceOppositeSideReachedQ(p, p->cell);
+
+    if(reached) {
+        printf("Border reached\n");
+        fflush(stdout);
+
+        boardPieceRemoveDisableOthers(board.pieceActive);
+    }
 }
 
 char boardPieceActiveJump(dir d) {
@@ -94,7 +106,7 @@ char boardPieceActiveJumpAny(dir d) {
     if(!choice) {
         cell *c = p->landingCells[0];
         if(!c) return 0; 
-        
+
         boardPieceJump(p, c);
         boardPieceShapeXYApply(p);
 
@@ -102,7 +114,7 @@ char boardPieceActiveJumpAny(dir d) {
     } else {
         pieceLandingOn(p);
         p->landingDir = d;
-        
+
         return 0;
     }
 }

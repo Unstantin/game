@@ -73,16 +73,8 @@ void mouseReceiverScenePieceMove(int mode) {
             hit = point2cell(mouseCoords, &c);
             piece *p = board.pieceActive;
             if(hit) {
-                char success = boardPieceActiveJumpToCell(c);
-                if(success) {
-#ifdef GAME_DEV_MODE 
-                    board.pieceActive->stepCount++;
-#else
-                    boardPieceActivateNext();
-#endif
-                }
+                boardPieceActiveJumpToCell(c);
             }
-
             break;
         case MOUSE_MODE(GLUT_RIGHT_BUTTON, GLUT_DOWN, MOUSE_EVENT_CLICK):
             if(!board.pieceActive->landing) {

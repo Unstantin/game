@@ -9,7 +9,7 @@
 #include "piece.h"
 
 void boardPieceStep(unsigned int dirname);
-char boardPieceActiveJumpToCell(cell *c);
+void boardPieceActiveJumpToCell(cell *c);
 char boardPieceActiveJump(dir d);
 char boardPieceActiveJumpAny(dir d);
 char boardPieceActiveMoveSingle(dir d);
