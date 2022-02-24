@@ -10,22 +10,25 @@ SRC = $(TARGET:=.c) polygon.c snowflake.c axes.c window.c \
 LDLIBS = -lm -lglut -lGL -lGLEW
 CFLAGS = -g3 -fdiagnostics-color=always
 
+TARGET_DIR = ..
+TARGET_NAME_FULL := $(strip $(TARGET_DIR))/$(TARGET)
+
 OBJ := $(SRC:.c=.o)
 HDR := $(SRC:.c=.h)
 
-GITHUB_DIR = github
+GITHUB_DIR = $(strip $(TARGET_DIR))/github
 GITHUB_SRC_DIR := $(strip $(GITHUB_DIR))/src
 GITHUB_IMG_DIR := $(strip $(GITHUB_DIR))/img
 
 ################################
 
-.PHONY: all debug ctags start github
+.PHONY: run debug ctags start clean github-src
 
-all: $(TARGET)
-	./$<
+run: $(TARGET)
+	cd $(TARGET_DIR) && ./$<
 
 $(TARGET): $(OBJ)
-	gcc $^ $(LDLIBS) -o $@
+	gcc $^ $(LDLIBS) -o $(TARGET_NAME_FULL)
 
 %.o: %.c 
 	gcc -c $(CFLAGS) $<
@@ -36,16 +39,18 @@ $(HDR): | start
 	touch $@
         
 debug: $(TARGET)
-	gdb -q $(TARGET)
+	cd $(TARGET_DIR) && gdb -q $<
 
 ctags:
 	ctags -R
 
 start: 
 	@printf '\n\e[32;1m******************** Start ********************\e[0m\n\n'
+
+clean:
+	@find . \( -name "*.o" -o -name ".*.sw?" \) -print0 | xargs -0 rm -vf
         
-github:
-	@rm -rf $(GITHUB_SRC_DIR) $(GITHUB_IMG_DIR) 
+github-src:
+	@rm -rf $(GITHUB_SRC_DIR)
 	@mkdir -p $(GITHUB_SRC_DIR) && cp -v $(SRC) $(HDR) Makefile $(GITHUB_SRC_DIR)
-	@cp -vr img $(GITHUB_DIR)
 	
